@@ -1,6 +1,6 @@
-A,B
 A,C
+A,B
 B,D
 D,E
-C,F
 C,G
+C,F

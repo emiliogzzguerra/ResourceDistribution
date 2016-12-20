@@ -16,6 +16,17 @@
 
 using namespace std;
 
+bool pairCompare(const pair<int, int> &firstElem, const pair<int,int> &secondElem) {
+    return firstElem.first < secondElem.first;
+}
+
+bool pairCompareSecond(const pair<int, int> &firstElem, const pair<int,int> &secondElem) {
+    if(firstElem.first == secondElem.first){
+        return firstElem.second < secondElem.second;
+    }
+    return false;
+}
+
 int main() {
     map<char,int> mConnections;
     map<int,int> mScore;
@@ -26,28 +37,51 @@ int main() {
     
     char a, comma, b;
     
-    int i = 0;
+    vector<pair<char,char>> vAux;
     
     while(doc >> a >> comma >> b){
-        if(mConnections.find(a) == mConnections.end()){
-            mConnections.insert(make_pair(a,i));
-            mScore.insert(make_pair(i,0));
-            i++;
-        }
+        vAux.push_back(make_pair(a, b));
     }
+
+    sort(vAux.begin(), vAux.end(), pairCompare);
     
+    sort(vAux.begin(), vAux.end(), pairCompareSecond);
+
     doc.close();
 
     doc.open("score.txt");
     
-    int iKey,iScore;
+    char cKey;
+    int iScore;
     
-    while(doc >> iKey >> comma >> iScore){
-        mScore.find(iKey)->second = iScore;
+    vector <pair<char,int>> vAux2;
+    
+    while(doc >> cKey >> comma >> iScore){ //Meter scores en vector de pares
+        vAux2.push_back(make_pair(cKey, iScore));
     }
+    
+    sort(vAux2.begin(), vAux2.end(), pairCompare); //Sortear scores por sus padres
     
     doc.close();
     
+    int iKey = 0;
+    
+    for(int i = 0; i<vAux2.size(); i++){
+        mScore.insert(make_pair(iKey, vAux2[i].second));
+        mConnections.insert(make_pair(vAux2[i].first, iKey));
+        iKey++;
+    }
+    
+    
+    for(auto elem : mConnections){
+        cout << elem.first << " " << elem.second << endl;
+    }
+    
+    cout << endl;
+    
+    for(auto elem : mScore){
+        cout << elem.first << " " << elem.second << endl;
+    }
     
     
     //vector<int> a{0, 1, 2, 3, 4};
@@ -60,21 +94,16 @@ int main() {
 }
 
 /*
- ifstream archNum;
- string iArrA[25], iArrB[25];
- int iSize = 0;
- string sInputA, sInputB;
- mConexiones archNum.open("archivo.txt");
- 
- while (archNum >> sInputA >> sInputB) {
- iArrA[iSize] = sInputA;
- iArrB[iSize] = sInputB;
- iSize++;
- }
- mConexiones archNum.close();
- 
- for (int i = 0; i<iSize; i++) {
- printf("%s %s\n",iArrA[i].c_str(),iArrB[i].c_str());
- }
- return 0;
+int iCount = 0;
+
+for(int i = 0; i<vAux.size(); i++){
+    if(mConnections.find(vAux[i].first) == mConnections.end()){
+        mConnections.insert(make_pair(vAux[i].first,iCount));
+        mScore.insert(make_pair(iCount,0));
+        iCount++;
+    }
+}
+
+
+    
 */
