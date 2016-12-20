@@ -8,13 +8,20 @@
 
 #include <iostream>
 #include <functional>
-#include <numeric>
 #include <vector>
 #include <fstream>
 #include <map>
+#include <numeric>
 
 
 using namespace std;
+
+void printVector(vector<int> vec){
+    for(int i = 0; i<vec.size(); i++){
+        cout << vec[i] << " ";
+    }
+    cout << endl;
+}
 
 void print2dVector(vector<vector<int>> vec){
     for(int i = 0; i<vec.size(); i++){
@@ -23,6 +30,7 @@ void print2dVector(vector<vector<int>> vec){
         }
         cout << endl;
     }
+    cout << endl;
 }
 
 bool pairCompare(const pair<int, int> &firstElem, const pair<int,int> &secondElem) {
@@ -37,6 +45,12 @@ bool pairCompareSecond(const pair<int, int> &firstElem, const pair<int,int> &sec
 }
 
 int main() {
+    
+    //Initial values
+    int iPlatino = 40;
+    
+    
+    
     map<char,int> mConnections;
     map<int,int> mScore;
     
@@ -75,31 +89,40 @@ int main() {
     
     int iKey = 0;
     
-    for(int i = 0; i<vAux2.size(); i++){
+    for(int i = 0; i<vAux2.size(); i++){ //Meter informacion de identificador numerico con letra y con score
         mScore.insert(make_pair(iKey, vAux2[i].second));
         mConnections.insert(make_pair(vAux2[i].first, iKey));
         iKey++;
     }
     
-    vector<vector<int>> vM(vAux2.size(), vector<int>(vAux2.size()));
-    
-    print2dVector(vM);
-    
-    cout << endl;
+    vector<vector<int>> vM(vAux2.size(), vector<int>(vAux2.size())); //Crear matriz de conexiones vacias
     
     int iRow,iCol;
+    
+    vector<int> vMColAddition(vAux2.size()); //Crear matriz de sumatoria de conexiones
     
     for(auto i : vConnections){
         iRow = mConnections.find(i.second)->second;
         iCol = mConnections.find(i.first)->second;
         vM[iRow][iCol] = 1;
+        vMColAddition[iCol] += 1; //Meter info a sumatoria de conexiones
     }
     
     print2dVector(vM);
     
-    cout << endl;
+    //printVector(vMColAddition);
     
+    vector<int> vEmpty(vAux2.size());
     
+    for(int i = 0; i<vMColAddition.size(); i++){
+        if(vMColAddition[i] == 0){
+            if(mScore.find(i)->second < 40){
+                vM[i] = vEmpty;
+            }
+        }
+    }
+    
+    print2dVector(vM);
     
     
     //vector<int> a{0, 1, 2, 3, 4};
