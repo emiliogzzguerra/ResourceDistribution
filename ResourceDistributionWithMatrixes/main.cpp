@@ -16,6 +16,21 @@
 
 using namespace std;
 
+void vectorSums(vector<vector<int>>vM, vector<int>&v,vector<int>&v2,int iSize){
+    v = vector<int>(iSize);
+    v2 = v;
+    for(int i = 0; i<vM.size(); i++){
+        for(int j = 0; j<vM[i].size(); j++){
+            if(vM[j][i] == 1){
+                v[i] += 1; //Meter info a sumatoria de conexiones
+            }
+            if(vM[i][j] == 1){
+                v2[i] += 1;
+            }
+        }
+    }
+}
+
 void printVector(vector<int> vec){
     for(int i = 0; i<vec.size(); i++){
         cout << vec[i] << " ";
@@ -99,31 +114,35 @@ int main() {
     
     int iRow,iCol;
     
-    vector<int> vMColAddition(vAux2.size()); //Crear matriz de sumatoria de conexiones
+    vector<int> vMColAddition(vAux2.size()); //Crear matriz de sumatoria de columnas
+    vector<int> vMRowAddition(vAux2.size()); //Crear matriz de sumatoria de filas
+
     
     for(auto i : vConnections){
         iRow = mConnections.find(i.second)->second;
         iCol = mConnections.find(i.first)->second;
         vM[iRow][iCol] = 1;
-        vMColAddition[iCol] += 1; //Meter info a sumatoria de conexiones
+        //vMColAddition[iCol] += 1; //Meter info a sumatoria de conexiones
     }
-    
-    print2dVector(vM);
-    
-    //printVector(vMColAddition);
     
     vector<int> vEmpty(vAux2.size());
-    
-    for(int i = 0; i<vMColAddition.size(); i++){
-        if(vMColAddition[i] == 0){
-            if(mScore.find(i)->second < 40){
-                vM[i] = vEmpty;
+    bool bDeletedSomething;
+    do{
+        bDeletedSomething = false;
+        vectorSums(vM, vMColAddition,vMRowAddition,vAux2.size());
+        for(int i = 0; i<vMColAddition.size(); i++){
+            if(vMColAddition[i] == 0){
+                if(mScore.find(i)->second < iPlatino && vMRowAddition[i] != 0){
+                    //cout << mScore.find(i)->second << " vs " << iPlatino << endl;
+                    vM[i] = vEmpty;
+                    bDeletedSomething = true;
+                }
             }
         }
-    }
+    } while (bDeletedSomething);
     
     print2dVector(vM);
-    
+    printVector(vMColAddition);
     
     //vector<int> a{0, 1, 2, 3, 4};
     //vector<int> b{5, 4, 2, 3, 1};
