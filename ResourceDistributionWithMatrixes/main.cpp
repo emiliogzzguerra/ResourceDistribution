@@ -31,6 +31,13 @@ void vectorSums(vector<vector<int>>vM, vector<int>&v,vector<int>&v2,int iSize){
     }
 }
 
+template<typename map_key, typename map_val>
+void printMap(const map<map_key, map_val>& _map) {
+    for(auto elem : _map){
+        cout << elem.first << " " << elem.second << endl;
+    }
+}
+
 void printVector(vector<int> vec){
     for(int i = 0; i<vec.size(); i++){
         cout << vec[i] << " ";
@@ -63,8 +70,6 @@ int main() {
     
     //Initial values
     int iPlatino = 40;
-    
-    
     
     map<char,int> mConnections;
     map<int,int> mScore;
@@ -125,6 +130,9 @@ int main() {
         //vMColAddition[iCol] += 1; //Meter info a sumatoria de conexiones
     }
     
+    char cRank[4] = {'P','Z','E','D'};
+    map<int,char> mRank; //Where the ranks will live
+    
     vector<int> vEmpty(vAux2.size());
     bool bDeletedSomething;
     do{
@@ -136,34 +144,90 @@ int main() {
                     //cout << mScore.find(i)->second << " vs " << iPlatino << endl;
                     vM[i] = vEmpty;
                     bDeletedSomething = true;
+                } else if (mScore.find(i)->second >= iPlatino){
+                    if(mRank.find(i) == mRank.end()){
+                        mRank.insert(make_pair(i, cRank[0]));
+                        cout << "Platino sin hijos!" << endl;
+                    }
                 }
             }
         }
     } while (bDeletedSomething);
     
-    print2dVector(vM);
-    printVector(vMColAddition);
+    //printVector(vMColAddition);
     
-    //vector<int> a{0, 1, 2, 3, 4};
-    //vector<int> b{5, 4, 2, 3, 1};
+    //cout << endl;
+    //print2dVector(vM);
     
-    //int r1 = inner_product(a.begin(), a.end(), b.begin(), 0);
-    // insert code here...
-    //cout << "Hello, World!\n";
+    int iJumper = 20;
+    
+    for(int i = 0; i<vMColAddition.size(); i++){
+        if(vMColAddition[i] != 0){
+            switch (vMColAddition[i]) {
+                case 1:
+                    if(mScore.find(i)->second >= iJumper){
+                        mRank.insert(make_pair(i, cRank[0]));
+                        //cout << "Platino con hijos!" << endl;
+                    } else {
+                        //Borrar 1 existente y tomar en cuenta su posicion
+                        int iPos;
+                        
+                        for(int j = 0; j<vM.size(); j++){
+                            if(vM[j][i] == 1){
+                                iPos = j;
+                                vM[j][i] = 0;
+                            }
+                        }
+                        int iPadre;
+                        for(int k = 0; k<vM[i].size(); k++){
+                            if(vM[i][k] == 1){
+                                iPadre = k;
+                                break;
+                            }
+                        }
+                        //Borro i y pongo hijo de el borrado (ipos)
+                        for(int l = 0; l<vM.size(); l++){
+                            if(l == i){
+                                vM[l][iPadre] = 0;
+                            } else if (l == iPos){
+                                vM[l][iPadre] = 1;
+                            }
+                        }
+                    }
+                    break;
+                case 2:
+                    if(mScore.find(i)->second < iJumper){
+                        mRank.insert(make_pair(i, cRank[0]));
+                    } else if (mScore.find(i)->second >= iJumper){
+                        mRank.insert(make_pair(i, cRank[1]));
+                    }
+                    //cout << "Zafiro!" << endl;
+                    break;
+                default:
+                    mRank.insert(make_pair(i, cRank[2]));
+                    //cout << "Esmeralda!" << endl;
+                    break;
+            }
+        }
+    }
+    
+    printMap(mScore);
+    
+    
+    
+    
+    
     return 0;
 }
 
 /*
-int iCount = 0;
+ 
+ vector<int> a{0, 1, 2, 3, 4};
+ vector<int> b{5, 4, 2, 3, 1};
+ 
+ int r1 = inner_product(a.begin(), a.end(), b.begin(), 0);
+  insert code here...
+ cout << "Hello, World!\n";
 
-for(int i = 0; i<vAux.size(); i++){
-    if(mConnections.find(vAux[i].first) == mConnections.end()){
-        mConnections.insert(make_pair(vAux[i].first,iCount));
-        mScore.insert(make_pair(iCount,0));
-        iCount++;
-    }
-}
-
-
-    
+ 
 */
