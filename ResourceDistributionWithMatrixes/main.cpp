@@ -16,6 +16,15 @@
 
 using namespace std;
 
+void print2dVector(vector<vector<int>> vec){
+    for(int i = 0; i<vec.size(); i++){
+        for(int j = 0; j<vec[i].size(); j++){
+            cout << vec[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
 bool pairCompare(const pair<int, int> &firstElem, const pair<int,int> &secondElem) {
     return firstElem.first < secondElem.first;
 }
@@ -37,15 +46,15 @@ int main() {
     
     char a, comma, b;
     
-    vector<pair<char,char>> vAux;
+    vector<pair<char,char>> vConnections;
     
     while(doc >> a >> comma >> b){
-        vAux.push_back(make_pair(a, b));
+        vConnections.push_back(make_pair(a, b));
     }
 
-    sort(vAux.begin(), vAux.end(), pairCompare);
+    sort(vConnections.begin(), vConnections.end(), pairCompare);
     
-    sort(vAux.begin(), vAux.end(), pairCompareSecond);
+    sort(vConnections.begin(), vConnections.end(), pairCompareSecond);
 
     doc.close();
 
@@ -72,16 +81,25 @@ int main() {
         iKey++;
     }
     
+    vector<vector<int>> vM(vAux2.size(), vector<int>(vAux2.size()));
     
-    for(auto elem : mConnections){
-        cout << elem.first << " " << elem.second << endl;
-    }
+    print2dVector(vM);
     
     cout << endl;
     
-    for(auto elem : mScore){
-        cout << elem.first << " " << elem.second << endl;
+    int iRow,iCol;
+    
+    for(auto i : vConnections){
+        iRow = mConnections.find(i.second)->second;
+        iCol = mConnections.find(i.first)->second;
+        vM[iRow][iCol] = 1;
     }
+    
+    print2dVector(vM);
+    
+    cout << endl;
+    
+    
     
     
     //vector<int> a{0, 1, 2, 3, 4};
