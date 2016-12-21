@@ -147,7 +147,7 @@ int main() {
                 } else if (mScore.find(i)->second >= iPlatino){
                     if(mRank.find(i) == mRank.end()){
                         mRank.insert(make_pair(i, cRank[0]));
-                        cout << "Platino sin hijos!" << endl;
+                        //cout << "Platino sin hijos!" << endl;
                     }
                 }
             }
@@ -211,9 +211,63 @@ int main() {
         }
     }
     
-    printMap(mScore);
+    /********************* ASIGNACION DE PUNTOS ***************************/
     
+    map<int,int> mFinalScore; //Aquí estará la relacion entre personas y puntos finales
+    int iArrScore[3] = {60, 80, 100};
+    int iMultiplicadores[3] = {2,2,2}; //Multiplicadores de cada nivel
     
+    print2dVector(vM);
+    
+    pair<int,int> pPos;
+    vector<vector<int>> vMAux(vAux2.size());//Crear matriz de conexiones vacia
+    
+    for(int i = 0; i<vAux2.size(); i++){
+        if(mRank.find(i) == mRank.end()){
+            mFinalScore.insert(make_pair(i, 0));
+        } else {
+            switch (mRank.find(i)->second) {
+                case 'P':
+                    iScore = vMColAddition[i] * iArrScore[0]; //Cantidad de hijos * puntos que suben
+                    iScore += iMultiplicadores[0] * mScore.find(i)->second; //Mis puntos * multiplicador
+                    mFinalScore.insert(make_pair(i, iScore));
+                    break;
+                case 'Z':
+                    iScore = vMColAddition[i] * iArrScore[1];
+                    iScore += iMultiplicadores[1] * mScore.find(i)->second;
+                    mFinalScore.insert(make_pair(i, iScore));
+                    break;
+                    
+                case 'E':
+                    
+                    vMAux = vM;
+                    for(int a = 0; a<vMColAddition[i]; a++){
+                        vMAux[a][i] = 0;
+                    }
+                    print2dVector(vMAux);
+                    for(int j = 0; j<vMColAddition[i]; j++){
+                        for(int k = 0; k<vM[i].size(); k++){
+                            if(vM[k][i] == 1){
+                                pPos = make_pair(i, j);
+                                break;
+                            }
+                        }
+                        
+                    }         
+                    iScore = vMColAddition[i] * iArrScore[1];
+                    iScore += iMultiplicadores[1] * mScore.find(i)->second;
+                    mFinalScore.insert(make_pair(i, iScore));
+                    
+                    break;
+                    
+                default:
+                    cout << "Fuck" << endl;
+                    break;
+            }
+            int iMaterial = mRank.find(i)->second;
+            
+        }
+    }
     
     
     
