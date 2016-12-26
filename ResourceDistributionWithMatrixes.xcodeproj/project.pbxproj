@@ -23,10 +23,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9460FC631E10E82C00EA49BA /* connect.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = connect.txt; sourceTree = "<group>"; };
+		9460FC641E10E82C00EA49BA /* sc.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sc.txt; sourceTree = "<group>"; };
 		9479B20D1E09AFDF00F217DB /* ResourceDistributionWithMatrixes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ResourceDistributionWithMatrixes; sourceTree = BUILT_PRODUCTS_DIR; };
 		9479B2101E09AFDF00F217DB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		9479B2171E09B16400F217DB /* connections.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = connections.txt; sourceTree = "<group>"; };
-		94CA5CF21E09BD2C0094F677 /* score.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = score.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,9 +59,9 @@
 		9479B20F1E09AFDF00F217DB /* ResourceDistributionWithMatrixes */ = {
 			isa = PBXGroup;
 			children = (
-				94CA5CF21E09BD2C0094F677 /* score.txt */,
+				9460FC631E10E82C00EA49BA /* connect.txt */,
+				9460FC641E10E82C00EA49BA /* sc.txt */,
 				9479B2101E09AFDF00F217DB /* main.cpp */,
-				9479B2171E09B16400F217DB /* connections.txt */,
 			);
 			path = ResourceDistributionWithMatrixes;
 			sourceTree = "<group>";

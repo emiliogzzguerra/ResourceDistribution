@@ -61,6 +61,14 @@ void printMap(const map<map_key, map_val>& _map) {
     }
 }
 
+template<typename v_key, typename v_val>
+void printPairVector(const vector<v_key, v_val>& output){
+    for(int i = 0; i < output.size(); i++)
+    {
+        cout << output[i].first << "," << output[i].second << endl;
+    }
+}
+
 void printVector(vector<int> vec){
     for(int i = 0; i<vec.size(); i++){
         cout << vec[i] << " ";
@@ -69,7 +77,11 @@ void printVector(vector<int> vec){
 }
 
 void print2dVector(vector<vector<int>> vec){
+    for(int a = 0; a<vec.size(); a++){
+        cout << a << " ";
+    }
     for(int i = 0; i<vec.size(); i++){
+        cout << i << " ";
         for(int j = 0; j<vec[i].size(); j++){
             cout << vec[i][j] << " ";
         }
@@ -77,7 +89,7 @@ void print2dVector(vector<vector<int>> vec){
     }
     cout << endl;
 }
-
+/*
 bool pairCompare(const pair<int, int> &firstElem, const pair<int,int> &secondElem) {
     return firstElem.first < secondElem.first;
 }
@@ -88,6 +100,7 @@ bool pairCompareSecond(const pair<int, int> &firstElem, const pair<int,int> &sec
     }
     return false;
 }
+*/
 
 int main() {
     
@@ -99,39 +112,54 @@ int main() {
     
     ifstream doc;
     
-    doc.open("connections.txt");
+    //Obtener conexiones
+    doc.open("connect.txt");
     
-    char a, comma, b;
+    int a, b;
+    char comma;
     
-    vector<pair<char,char>> vConnections;
+    vector<pair<int,int>> vConnections;
     
     while(doc >> a >> comma >> b){
         vConnections.push_back(make_pair(a, b));
     }
-
-    sort(vConnections.begin(), vConnections.end(), pairCompare);
     
-    sort(vConnections.begin(), vConnections.end(), pairCompareSecond);
+//    cout<< "--------------Inicial--------------" << endl;
+//    printPairVector(vConnections);
 
+    sort(vConnections.begin(), vConnections.end());
+//    cout<< "--------------PrimerSort--------------" << endl;
+//    printPairVector(vConnections);
+    
     doc.close();
-
-    doc.open("score.txt");
     
-    char cKey;
+    //printPairVector(vConnections);
+    
+    //Obtener puntos de cada nodo
+    doc.open("sc.txt");
+    
+    int cKey;
     int iScore;
-
-
     
-    vector <pair<char,int>> vAux2;
+    vector <pair<int,int>> vAux2;
     
     while(doc >> cKey >> comma >> iScore){ //Meter scores en vector de pares
         vAux2.push_back(make_pair(cKey, iScore));
     }
     
-    sort(vAux2.begin(), vAux2.end(), pairCompare); //Sortear scores por sus padres
+    //cout<< "--------------Inicial--------------" << endl;
+    //printPairVector(vAux2);
+    
+    sort(vAux2.begin(), vAux2.end()); //Sortear scores por sus padres
+    
+    //cout<< "--------------PrimerSort--------------" << endl;
+    //printPairVector(vAux2);
     
     doc.close();
 
+    
+    //Meter info que obtuvimos a sus respectivos mapas
+    
     int n = vAux2.size();
     
     int iKey = 0;
@@ -141,6 +169,8 @@ int main() {
         mConnections.insert(make_pair(vAux2[i].first, iKey));
         iKey++;
     }
+    
+    
     
     vector<vector<int>> vM(n, vector<int>(n)); //Crear matriz de conexiones vacias
     
@@ -156,6 +186,8 @@ int main() {
         vM[iRow][iCol] = 1;
         //vMColAddition[iCol] += 1; //Meter info a sumatoria de conexiones
     }
+    
+    //print2dVector(vM);
     
     char cRank[4] = {'P','Z','E','D'};
     map<int,char> mRank; //Where the ranks will live
@@ -238,7 +270,7 @@ int main() {
         }
     }
     
-    /********************* ASIGNACION DE PUNTOS ***************************/
+    // ASIGNACION DE puntos
     
     map<int,int> mFinalScore; //Aquí estará la relacion entre personas y puntos finales
     int iArrScore[3] = {60, 80, 100};
@@ -256,8 +288,10 @@ int main() {
     bool bBreak = true;
     int iScoreLastChance = 0;
     vector<int> vPosicionesUnos;
+    vector<int> vPosicionesUnosAux(n);
     int iCountHijos = 0;
     
+    printMap(mRank);
     
     for(int i = 0; i<n; i++){
         if(mRank.find(i) == mRank.end()){
@@ -277,13 +311,13 @@ int main() {
                     
                 case 'E':
                     iScore = 0;
-                    //cout << "Esmeralda" << endl;
+                    cout << "Esmeralda" << endl;
                     vMatrizOriginal = vM;
                     vMatrizAuxiliar = vMatrizOriginal;
-                    //print2dVector(vMatrizOriginal);
+                    print2dVector(vMatrizOriginal);
                     
                     cout << "Antes de todo Original:" << endl;
-                    print2dVector(vMatrizOriginal);
+                     print2dVector(vMatrizOriginal);
                     
                     for(int a = 0; a<vMatrizAuxiliar.size(); a++){
                         if(vMatrizAuxiliar[a][i] == 1){
@@ -293,27 +327,27 @@ int main() {
                         vMatrizAuxiliar[a][i] = 0;
                     }
                     
-                    cout << "Auxiliar con columna vacia:" << endl;
+                    cout << "Auxiliar con columna vacia: (" << i << ")" << endl;
                     print2dVector(vMatrizAuxiliar);
                 
                     for(auto k : vPosicionesUnos){
                         
                         vMatrizAuxiliar[k][i] = 1;
                         
-                        cout << "Auxiliar en " << iCountDepth << ": " << endl;
-                        print2dVector(vMatrizAuxiliar);
+                        cout << "Auxiliar en " << iCountDepth << ":  (" << i << ")"<< endl;
+                         print2dVector(vMatrizAuxiliar);
                         
                         while(iCountDepth<6 && bBreak){
                             iTemporal = 0;
                             for(int m = 0; m<n; m++){
-                                cout << "m = " << m << endl;
-                                cout << "i = " << i << endl;
-                                cout << "Sumatoria de columna = " << vectorColSum(vMatrizAuxiliar, i) << endl;
-                                cout << endl;
-                                if(vMatrizAuxiliar[m][i] == 1 && mRank.find(m)->second == 'E'){
+                                 cout << "m = " << m << endl;
+                                 cout << "i = " << i << endl;
+                                 cout << "Sumatoria de columna = " << vectorColSum(vMatrizAuxiliar, i) << endl;
+                                 cout << endl;
+                                if(vMatrizAuxiliar[vPosicionesUnosAux[i]][i] == 1 && mRank.find(vPosicionesUnosAux[i])->second == 'E'){
                                     
-                                    cout << "En auxiliar se encontró : " << vMatrizAuxiliar[m][i] << endl;
-                                    cout << "En la matriz de rank se encontró: " << mRank.find(m)->second << endl;
+                                     cout << "En auxiliar se encontró : " << vMatrizAuxiliar[vPosicionesUnosAux[i]][i] << endl;
+                                     cout << "En la matriz de rank se encontró: " << mRank.find(vPosicionesUnosAux[i])->second << endl;
                                     
                                     iTemporal = iCountDepth * iPuntosProfundidad;
                                     iTemporal += iPuntosEsmeralda;
@@ -322,37 +356,61 @@ int main() {
                                     break;
                                     
                                 } else if (vectorColSum(vMatrizAuxiliar, i) == 0) {
-                                    cout << m << " - Elseif" << endl << endl;
+                                     cout << m << " - Elseif" << endl << endl;
                                     iTemporal = (iCountDepth-1) * iPuntosProfundidad;
                                     iTemporal += iArrScore[2]; // +100
                                     bBreak = false;
                                     break;
                                 
                                 } else {
+                                    if(vMatrizAuxiliar[vPosicionesUnosAux[i]][i] == 1){
+                                        cout << "Primer condicion correcta" << endl;
+                                    } else {
+                                        cout << "Primer condicion INCORRECTA" << endl;
+                                    }
+                                    
+                                    cout << vPosicionesUnosAux[i] << endl;
+                                    
+                                    cout << mRank.find(vPosicionesUnosAux[i])->second << endl;
                                     
                                     cout << m << " - Else" << endl << endl;
                                     
                                     iCountDepth++;
                                     
-                                    if(iCountDepth >= 6){
+                                    cout << "iCountDepth = " << iCountDepth << endl;
+                                    
+                                    if(iCountDepth >= 5){
                                         iTemporal = iCountDepth * iPuntosProfundidad;
                                         iTemporal += iArrScore[2]; // +100
+                                        bBreak = false;
+                                        break;
                                     } else {
                                         vMatrizAuxiliar = multiplyMatrix(vMatrizOriginal, vMatrizAuxiliar, n);
                                         
-                                        cout << "Auxiliar*Original en " << iCountDepth << ": " << endl;
-                                        print2dVector(vMatrizAuxiliar);
+                                         cout << "Auxiliar*Original en " << iCountDepth << ": " << endl;
+                                         print2dVector(vMatrizAuxiliar);
                                         
-                                        cout << "---------------------------" << endl;
-                                    }                                    
+                                         cout << "---------------------------" << endl;
+                                        while (!vPosicionesUnosAux.empty())
+                                        {
+                                            vPosicionesUnosAux.pop_back();
+                                        }
+                                        for(int a = 0; a<vMatrizAuxiliar.size(); a++){
+                                            if(vMatrizAuxiliar[a][i] == 1){
+                                                vPosicionesUnosAux.push_back(a);
+                                                cout << "HERE" <<  a << endl;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
+                        cout << "Puntos que el hijo " << iCountHijos << " contribuyo: " << iTemporal << endl;
                         iScore += iTemporal;
                         cout << "iScore en " << iCountHijos << " hijo: " << iScore << endl;
                         iCountHijos ++;
 
-                        cout << "Salimos del while" << endl;
+                         cout << "Salimos del while" << endl;
                         bBreak = true;
 						iCountDepth = 0;
                         
@@ -361,6 +419,7 @@ int main() {
                             vMatrizAuxiliar[a][i] = 0;
                         }
                     }
+                    iCountHijos = 0;
                     iScore += iMultiplicadores[2] * mScore.find(i)->second;
                     mFinalScore.insert(make_pair(i,iScore));
                     iTemporal = 0;
@@ -371,11 +430,12 @@ int main() {
                     break;
                     
                 default:
-                    cout << "Esto no debería pasar :/ hahah" << endl;
+                    // cout << "Esto no debería pasar :/ hahah" << endl;
                     break;
             }            
         }
     }
     printMap(mFinalScore);
+
     return 0;
 }
