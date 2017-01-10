@@ -1,1 +1,0 @@
-﻿Puntos para ser Platino,40,,,"Puntos para "saltar"""untos p",20,,,,,,,,Platino,Zafiro,Esmeralda,DiamantePuntos que suben por rank,60,80,100,120Multiplicador (Para calcular puntos individuales),2,2,2,2Puntos que reciben por profundidad,,,20,20Puntos especiales que suben,,,300,400,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

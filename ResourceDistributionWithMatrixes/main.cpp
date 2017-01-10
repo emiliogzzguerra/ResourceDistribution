@@ -107,9 +107,9 @@ int main() {
     //Initial values
     int iPlatino = 40;
     
-    map<char,int> mConnections;
-    map<int,int> mScore;
-    
+    map<string,int> mNameId;
+    map<int,string> mIdName;
+    map<int,int> mIdScore;
     ifstream doc;
     
     //Obtener conexiones
@@ -131,12 +131,8 @@ int main() {
         if(b == "ID_conex"){
             
             break;
-        } else {
-            cout << b << endl;
         }
-        //
     }
-    cout << a << endl;
     
     while(getline(doc, a)){
         istringstream ss(a);
@@ -151,41 +147,68 @@ int main() {
         
     }
     
-    /*
-    cout<< "--------------Inicial--------------" << endl;
-    printPairVector(vConnections);
+    
+    
+    
+//    cout<< "--------------Inicial--------------" << endl;
+//    printPairVector(vConnections);
 
-    sort(vConnections.begin(), vConnections.end());
-    cout<< "--------------PrimerSort--------------" << endl;
-    printPairVector(vConnections);
-    */
+//    sort(vConnections.begin(), vConnections.end());
+//    cout<< "--------------PrimerSort--------------" << endl;
+//    printPairVector(vConnections);
+//    
     doc.close();
 
     //printPairVector(vConnections);
     
     //Obtener puntos de cada nodo
-    doc.open("sc.txt");
+
+    doc.open("PUNTOS.txt");
     
     int cKey;
     int iScore;
     
-    vector <pair<int,int>> vAux2;
+    vector <pair<string,int>> vAux2;
     
-    while(doc >> cKey >> comma >> iScore){ //Meter scores en vector de pares
-        vAux2.push_back(make_pair(cKey, iScore));
+    while(getline(doc,a)){
+        istringstream ss(a);
+        getline(ss, b, ',');
+        if(b == "ID_ind"){
+            break;
+        }
     }
     
-    //cout<< "--------------Inicial--------------" << endl;
-    //printPairVector(vAux2);
+    string sNotNecessary,sPuntos;
+    int iPuntos;
     
-    sort(vAux2.begin(), vAux2.end()); //Sortear scores por sus padres
+    while(getline(doc, a)){
+        istringstream ss(a);
+        getline(ss, sNotNecessary, ',');
+        getline(ss, sIdentificador, ',');
+        getline(ss, sPuntos, ',');
+        if((sIdentificador != "") && (sPuntos != "")){
+            iPuntos = stoi(sPuntos);
+            vAux2.push_back(make_pair(sIdentificador, iPuntos));
+        } else {
+            break;
+        }
+        
+    }
     
-    //cout<< "--------------PrimerSort--------------" << endl;
-    //printPairVector(vAux2);
+    
+//    
+//    cout<< "--------------Inicial--------------" << endl;
+//    printPairVector(vAux2);
+//    
+//    sort(vAux2.begin(), vAux2.end()); //Sortear scores por sus padres
+//    
+//    cout<< "--------------PrimerSort--------------" << endl;
+//    printPairVector(vAux2);
+//    
     
     doc.close();
 
-    
+
     //Meter info que obtuvimos a sus respectivos mapas
     
     int n = vAux2.size();
@@ -193,8 +216,9 @@ int main() {
     int iKey = 0;
     
     for(int i = 0; i<n; i++){ //Meter informacion de identificador numerico con letra y con score
-        mScore.insert(make_pair(iKey, vAux2[i].second));
-        mConnections.insert(make_pair(vAux2[i].first, iKey));
+        mIdScore.insert(make_pair(iKey, vAux2[i].second));
+        mNameId.insert(make_pair(vAux2[i].first, iKey));
+        mIdName.insert(make_pair(iKey, vAux2[i].first));
         iKey++;
     }
     
@@ -206,16 +230,14 @@ int main() {
     
     vector<int> vMColAddition(n); //Crear matriz de sumatoria de columnas
     vector<int> vMRowAddition(n); //Crear matriz de sumatoria de filas
-
     
     for(auto i : vConnections){
-        iRow = mConnections.find(i.second)->second;
-        iCol = mConnections.find(i.first)->second;
+        //     ( ID del segundo en la conexion )
+        iRow = mNameId.find(i.second)->second;
+        iCol = mNameId.find(i.first)->second;
         vM[iRow][iCol] = 1;
         //vMColAddition[iCol] += 1; //Meter info a sumatoria de conexiones
     }
-    
-    //print2dVector(vM);
     
     char cRank[4] = {'P','Z','E','D'};
     map<int,char> mRank; //Where the ranks will live
@@ -227,11 +249,11 @@ int main() {
         vectorSums(vM, vMColAddition,vMRowAddition,n);
         for(int i = 0; i<vMColAddition.size(); i++){
             if(vMColAddition[i] == 0){
-                if(mScore.find(i)->second < iPlatino && vMRowAddition[i] != 0){
-                    //cout << mScore.find(i)->second << " vs " << iPlatino << endl;
+                if(mIdScore.find(i)->second < iPlatino && vMRowAddition[i] != 0){
+                    //cout << mIdScore.find(i)->second << " vs " << iPlatino << endl;
                     vM[i] = vEmpty;
                     bDeletedSomething = true;
-                } else if (mScore.find(i)->second >= iPlatino){
+                } else if (mIdScore.find(i)->second >= iPlatino){
                     if(mRank.find(i) == mRank.end()){
                         mRank.insert(make_pair(i, cRank[0]));
                         //cout << "Platino sin hijos!" << endl;
@@ -252,7 +274,7 @@ int main() {
         if(vMColAddition[j] != 0){
             switch (vMColAddition[j]) {
                 case 1:
-                    if(mScore.find(j)->second >= iJumperPlatino){
+                    if(mIdScore.find(j)->second >= iJumperPlatino){
                         mRank.insert(make_pair(j, cRank[0]));
                         //cout << "Platino con hijos!" << endl;
                     } else {
@@ -283,9 +305,9 @@ int main() {
                     }
                     break;
                 case 2:
-                    if(mScore.find(j)->second < iJumperPlatino){
+                    if(mIdScore.find(j)->second < iJumperPlatino){
                         mRank.insert(make_pair(j, cRank[0]));
-                    } else if (mScore.find(j)->second >= iJumperPlatino){
+                    } else if (mIdScore.find(j)->second >= iJumperPlatino){
                         mRank.insert(make_pair(j, cRank[1]));
                     }
                     //cout << "Zafiro!" << endl;
@@ -300,7 +322,7 @@ int main() {
     
     // ASIGNACION DE puntos
     
-    map<int,int> mFinalScore; //Aquí estará la relacion entre personas y puntos finales
+    map<string,int> mFinalScore; //Aquí estará la relacion entre personas y puntos finales
     int iArrScore[3] = {60, 80, 100};
     int iMultiplicadores[3] = {2,2,2}; //Multiplicadores de cada nivel
     int iPuntosProfundidad[2] = {20,20}; //Esmeralda, Diamante
@@ -316,23 +338,27 @@ int main() {
     vector<int> vPosicionesUnos;
     vector<int> vPosicionesUnosAux(n);
     int iCountHijos = 0;
+    string sTemporal;
     
     //printMap(mRank);
     
     for(int i = 0; i<n; i++){
         if(mRank.find(i) == mRank.end()){
-            mFinalScore.insert(make_pair(i, 0));
+            sTemporal = mIdName.find(i)->second;
+            mFinalScore.insert(make_pair(sTemporal, 0));
         } else {
             switch (mRank.find(i)->second) {
                 case 'P':
                     iScore = vMColAddition[i] * iArrScore[0]; //Cantidad de hijos * puntos que suben
-                    iScore += iMultiplicadores[0] * mScore.find(i)->second; //Mis puntos * multiplicador
-                    mFinalScore.insert(make_pair(i, iScore));
+                    iScore += iMultiplicadores[0] * mIdScore.find(i)->second; //Mis puntos * multiplicador
+                    sTemporal = mIdName.find(i)->second;
+                    mFinalScore.insert(make_pair(sTemporal, iScore));
                     break;
                 case 'Z':
                     iScore = vMColAddition[i] * iArrScore[1];
-                    iScore += iMultiplicadores[1] * mScore.find(i)->second;
-                    mFinalScore.insert(make_pair(i, iScore));
+                    iScore += iMultiplicadores[1] * mIdScore.find(i)->second;
+                    sTemporal = mIdName.find(i)->second;
+                    mFinalScore.insert(make_pair(sTemporal, iScore));
                     break;
                     
                 case 'E':
@@ -446,8 +472,9 @@ int main() {
                         }
                     }
                     iCountHijos = 0;
-                    iScore += iMultiplicadores[2] * mScore.find(i)->second;
-                    mFinalScore.insert(make_pair(i,iScore));
+                    iScore += iMultiplicadores[2] * mIdScore.find(i)->second;
+                    sTemporal = mIdName.find(i)->second;
+                    mFinalScore.insert(make_pair(sTemporal, iScore));
                     iTemporal = 0;
                     while (!vPosicionesUnos.empty())
                     {
@@ -565,8 +592,10 @@ int main() {
                         }
                     }
                     iCountHijos = 0;
-                    iScore += iMultiplicadores[3] * mScore.find(i)->second;
-                    mFinalScore.insert(make_pair(i,iScore));
+                    iScore += iMultiplicadores[3] * mIdScore.find(i)->second;
+                    //string sId = mNameId.find(i)->second;
+                    sTemporal = mIdName.find(i)->second;
+                    mFinalScore.insert(make_pair(sTemporal,iScore));
                     iTemporal = 0;
                     while (!vPosicionesUnos.empty())
                     {
