@@ -25,8 +25,13 @@
 /* Begin PBXFileReference section */
 		9460FC631E10E82C00EA49BA /* connect.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = connect.txt; sourceTree = "<group>"; };
 		9460FC641E10E82C00EA49BA /* sc.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sc.txt; sourceTree = "<group>"; };
+		9463883B1E11D53100114C12 /* padre-hijo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "padre-hijo.txt"; sourceTree = "<group>"; };
+		9463883C1E11D53100114C12 /* persona-puntos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "persona-puntos.txt"; sourceTree = "<group>"; };
+		9463883D1E11D53100114C12 /* variables.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = variables.txt; sourceTree = "<group>"; };
 		9479B20D1E09AFDF00F217DB /* ResourceDistributionWithMatrixes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ResourceDistributionWithMatrixes; sourceTree = BUILT_PRODUCTS_DIR; };
 		9479B2101E09AFDF00F217DB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		94B0F4071E25913F0031CE90 /* CONEXIONES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CONEXIONES.txt; sourceTree = "<group>"; };
+		94B0F4081E25913F0031CE90 /* PUNTOS.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PUNTOS.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +64,11 @@
 		9479B20F1E09AFDF00F217DB /* ResourceDistributionWithMatrixes */ = {
 			isa = PBXGroup;
 			children = (
+				94B0F4071E25913F0031CE90 /* CONEXIONES.txt */,
+				94B0F4081E25913F0031CE90 /* PUNTOS.txt */,
+				9463883B1E11D53100114C12 /* padre-hijo.txt */,
+				9463883C1E11D53100114C12 /* persona-puntos.txt */,
+				9463883D1E11D53100114C12 /* variables.txt */,
 				9460FC631E10E82C00EA49BA /* connect.txt */,
 				9460FC641E10E82C00EA49BA /* sc.txt */,
 				9479B2101E09AFDF00F217DB /* main.cpp */,

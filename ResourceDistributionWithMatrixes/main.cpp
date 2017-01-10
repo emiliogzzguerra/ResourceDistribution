@@ -13,7 +13,7 @@
 #include <map>
 #include <numeric>
 #include <queue>
-
+#include <sstream>      // std::istringstream
 
 
 using namespace std;
@@ -113,26 +113,54 @@ int main() {
     ifstream doc;
     
     //Obtener conexiones
-    doc.open("connect.txt");
+    doc.open("CONEXIONES.txt");
     
-    int a, b;
+    string a, b;
     char comma;
+    string sIdentificador,sNombrePadre,sNombreHijo;
     
-    vector<pair<int,int>> vConnections;
     
-    while(doc >> a >> comma >> b){
-        vConnections.push_back(make_pair(a, b));
+    
+    vector<pair<string,string>> vConnections;
+    
+    
+    
+    while(getline(doc,a)){
+        istringstream ss(a);
+        getline(ss, b, ',');
+        if(b == "ID_conex"){
+            
+            break;
+        } else {
+            cout << b << endl;
+        }
+        //
+    }
+    cout << a << endl;
+    
+    while(getline(doc, a)){
+        istringstream ss(a);
+        getline(ss, sIdentificador, ',');
+        getline(ss, sNombrePadre, ',');
+        getline(ss, sNombreHijo, ',');
+        if((sNombrePadre != "") && (sNombreHijo != "")){
+            vConnections.push_back(make_pair(sNombrePadre, sNombreHijo));
+        } else {
+            break;
+        }
+        
     }
     
-//    cout<< "--------------Inicial--------------" << endl;
-//    printPairVector(vConnections);
+    /*
+    cout<< "--------------Inicial--------------" << endl;
+    printPairVector(vConnections);
 
     sort(vConnections.begin(), vConnections.end());
-//    cout<< "--------------PrimerSort--------------" << endl;
-//    printPairVector(vConnections);
-    
+    cout<< "--------------PrimerSort--------------" << endl;
+    printPairVector(vConnections);
+    */
     doc.close();
-    
+
     //printPairVector(vConnections);
     
     //Obtener puntos de cada nodo
@@ -218,13 +246,13 @@ int main() {
     //cout << endl;
     //print2dVector(vM);
     
-    int iJumper = 20;
+    int iJumperPlatino = 20;
     
     for(int j = 0; j<vMColAddition.size(); j++){
         if(vMColAddition[j] != 0){
             switch (vMColAddition[j]) {
                 case 1:
-                    if(mScore.find(j)->second >= iJumper){
+                    if(mScore.find(j)->second >= iJumperPlatino){
                         mRank.insert(make_pair(j, cRank[0]));
                         //cout << "Platino con hijos!" << endl;
                     } else {
@@ -255,9 +283,9 @@ int main() {
                     }
                     break;
                 case 2:
-                    if(mScore.find(j)->second < iJumper){
+                    if(mScore.find(j)->second < iJumperPlatino){
                         mRank.insert(make_pair(j, cRank[0]));
-                    } else if (mScore.find(j)->second >= iJumper){
+                    } else if (mScore.find(j)->second >= iJumperPlatino){
                         mRank.insert(make_pair(j, cRank[1]));
                     }
                     //cout << "Zafiro!" << endl;
@@ -275,23 +303,21 @@ int main() {
     map<int,int> mFinalScore; //Aquí estará la relacion entre personas y puntos finales
     int iArrScore[3] = {60, 80, 100};
     int iMultiplicadores[3] = {2,2,2}; //Multiplicadores de cada nivel
-    int iPuntosProfundidad = 20;
-    int iPuntosEsmeralda = 300;
+    int iPuntosProfundidad[2] = {20,20}; //Esmeralda, Diamante
+    int iPuntosSubir[2] = {300,400}; //Esmeralda, Diamante
     int iColumnSum;
     int iTemporal = 0;
     
-    pair<int,int> pPos = make_pair(-1, 0);
     vector<vector<int>> vMatrizOriginal(n,vector<int>(n));
     vector<vector<int>> vMatrizAuxiliar(n,vector<int>(n));
     vector<int> vColSums;
     int iCountDepth = 0;
     bool bBreak = true;
-    int iScoreLastChance = 0;
     vector<int> vPosicionesUnos;
     vector<int> vPosicionesUnosAux(n);
     int iCountHijos = 0;
     
-    printMap(mRank);
+    //printMap(mRank);
     
     for(int i = 0; i<n; i++){
         if(mRank.find(i) == mRank.end()){
@@ -311,86 +337,86 @@ int main() {
                     
                 case 'E':
                     iScore = 0;
-                    cout << "Esmeralda" << endl;
+                    //cout << "Esmeralda" << endl;
                     vMatrizOriginal = vM;
                     vMatrizAuxiliar = vMatrizOriginal;
-                    print2dVector(vMatrizOriginal);
+                    //print2dVector(vMatrizOriginal);
                     
-                    cout << "Antes de todo Original:" << endl;
-                     print2dVector(vMatrizOriginal);
+                    //cout << "Antes de todo Original:" << endl;
+                     //print2dVector(vMatrizOriginal);
                     
                     for(int a = 0; a<vMatrizAuxiliar.size(); a++){
                         if(vMatrizAuxiliar[a][i] == 1){
                             vPosicionesUnos.push_back(a);
-                            cout << a << endl;
+                            //cout << a << endl;
                         }
                         vMatrizAuxiliar[a][i] = 0;
                     }
                     
-                    cout << "Auxiliar con columna vacia: (" << i << ")" << endl;
-                    print2dVector(vMatrizAuxiliar);
+                    //cout << "Auxiliar con columna vacia: (" << i << ")" << endl;
+                    //print2dVector(vMatrizAuxiliar);
                 
                     for(auto k : vPosicionesUnos){
                         
                         vMatrizAuxiliar[k][i] = 1;
                         
-                        cout << "Auxiliar en " << iCountDepth << ":  (" << i << ")"<< endl;
-                         print2dVector(vMatrizAuxiliar);
+                        //cout << "Auxiliar en " << iCountDepth << ":  (" << i << ")"<< endl;
+                         //print2dVector(vMatrizAuxiliar);
                         
                         while(iCountDepth<6 && bBreak){
                             iTemporal = 0;
                             for(int m = 0; m<n; m++){
-                                 cout << "m = " << m << endl;
-                                 cout << "i = " << i << endl;
-                                 cout << "Sumatoria de columna = " << vectorColSum(vMatrizAuxiliar, i) << endl;
-                                 cout << endl;
+                                 //cout << "m = " << m << endl;
+                                 //cout << "i = " << i << endl;
+                                 //cout << "Sumatoria de columna = " << vectorColSum(vMatrizAuxiliar, i) << endl;
+                                 //cout << endl;
                                 if(vMatrizAuxiliar[vPosicionesUnosAux[i]][i] == 1 && mRank.find(vPosicionesUnosAux[i])->second == 'E'){
                                     
-                                     cout << "En auxiliar se encontró : " << vMatrizAuxiliar[vPosicionesUnosAux[i]][i] << endl;
-                                     cout << "En la matriz de rank se encontró: " << mRank.find(vPosicionesUnosAux[i])->second << endl;
+                                     //cout << "En auxiliar se encontró : " << vMatrizAuxiliar[vPosicionesUnosAux[i]][i] << endl;
+                                     //cout << "En la matriz de rank se encontró: " << mRank.find(vPosicionesUnosAux[i])->second << endl;
                                     
-                                    iTemporal = iCountDepth * iPuntosProfundidad;
-                                    iTemporal += iPuntosEsmeralda;
+                                    iTemporal = iCountDepth * iPuntosProfundidad[0];
+                                    iTemporal += iPuntosSubir[0];
                                     
                                     bBreak = false;
                                     break;
                                     
                                 } else if (vectorColSum(vMatrizAuxiliar, i) == 0) {
-                                     cout << m << " - Elseif" << endl << endl;
-                                    iTemporal = (iCountDepth-1) * iPuntosProfundidad;
+                                     //cout << m << " - Elseif" << endl << endl;
+                                    iTemporal = (iCountDepth-1) * iPuntosProfundidad[0];
                                     iTemporal += iArrScore[2]; // +100
                                     bBreak = false;
                                     break;
                                 
                                 } else {
                                     if(vMatrizAuxiliar[vPosicionesUnosAux[i]][i] == 1){
-                                        cout << "Primer condicion correcta" << endl;
+                                        //cout << "Primer condicion correcta" << endl;
                                     } else {
-                                        cout << "Primer condicion INCORRECTA" << endl;
+                                        //cout << "Primer condicion INCORRECTA" << endl;
                                     }
                                     
-                                    cout << vPosicionesUnosAux[i] << endl;
+                                    //cout << vPosicionesUnosAux[i] << endl;
                                     
-                                    cout << mRank.find(vPosicionesUnosAux[i])->second << endl;
+                                    //cout << mRank.find(vPosicionesUnosAux[i])->second << endl;
                                     
-                                    cout << m << " - Else" << endl << endl;
+                                    //cout << m << " - Else" << endl << endl;
                                     
                                     iCountDepth++;
                                     
-                                    cout << "iCountDepth = " << iCountDepth << endl;
+                                    //cout << "iCountDepth = " << iCountDepth << endl;
                                     
                                     if(iCountDepth >= 5){
-                                        iTemporal = iCountDepth * iPuntosProfundidad;
+                                        iTemporal = iCountDepth * iPuntosProfundidad[0];
                                         iTemporal += iArrScore[2]; // +100
                                         bBreak = false;
                                         break;
                                     } else {
                                         vMatrizAuxiliar = multiplyMatrix(vMatrizOriginal, vMatrizAuxiliar, n);
                                         
-                                         cout << "Auxiliar*Original en " << iCountDepth << ": " << endl;
-                                         print2dVector(vMatrizAuxiliar);
+                                         //cout << "Auxiliar*Original en " << iCountDepth << ": " << endl;
+                                         //print2dVector(vMatrizAuxiliar);
                                         
-                                         cout << "---------------------------" << endl;
+                                         //cout << "---------------------------" << endl;
                                         while (!vPosicionesUnosAux.empty())
                                         {
                                             vPosicionesUnosAux.pop_back();
@@ -398,19 +424,19 @@ int main() {
                                         for(int a = 0; a<vMatrizAuxiliar.size(); a++){
                                             if(vMatrizAuxiliar[a][i] == 1){
                                                 vPosicionesUnosAux.push_back(a);
-                                                cout << "HERE" <<  a << endl;
+                                                //cout << "HERE" <<  a << endl;
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                        cout << "Puntos que el hijo " << iCountHijos << " contribuyo: " << iTemporal << endl;
+                        //cout << "Puntos que el hijo " << iCountHijos << " contribuyo: " << iTemporal << endl;
                         iScore += iTemporal;
-                        cout << "iScore en " << iCountHijos << " hijo: " << iScore << endl;
+                        //cout << "iScore en " << iCountHijos << " hijo: " << iScore << endl;
                         iCountHijos ++;
 
-                         cout << "Salimos del while" << endl;
+                        //cout << "Salimos del while" << endl;
                         bBreak = true;
 						iCountDepth = 0;
                         
@@ -428,7 +454,125 @@ int main() {
                         vPosicionesUnos.pop_back();
                     }
                     break;
+                case 'D':
+                    iScore = 0;
+                    //cout << "Esmeralda" << endl;
+                    vMatrizOriginal = vM;
+                    vMatrizAuxiliar = vMatrizOriginal;
+                    //print2dVector(vMatrizOriginal);
                     
+                    //cout << "Antes de todo Original:" << endl;
+                     //print2dVector(vMatrizOriginal);
+                    
+                    for(int a = 0; a<vMatrizAuxiliar.size(); a++){
+                        if(vMatrizAuxiliar[a][i] == 1){
+                            vPosicionesUnos.push_back(a);
+                            //cout << a << endl;
+                        }
+                        vMatrizAuxiliar[a][i] = 0;
+                    }
+                    
+                    //cout << "Auxiliar con columna vacia: (" << i << ")" << endl;
+                    //print2dVector(vMatrizAuxiliar);
+                
+                    for(auto k : vPosicionesUnos){
+                        
+                        vMatrizAuxiliar[k][i] = 1;
+                        
+                        //cout << "Auxiliar en " << iCountDepth << ":  (" << i << ")"<< endl;
+                         //print2dVector(vMatrizAuxiliar);
+                        
+                        while(iCountDepth<6 && bBreak){
+                            iTemporal = 0;
+                            for(int m = 0; m<n; m++){
+                                 //cout << "m = " << m << endl;
+                                 //cout << "i = " << i << endl;
+                                 //cout << "Sumatoria de columna = " << vectorColSum(vMatrizAuxiliar, i) << endl;
+                                 //cout << endl;
+                                if(vMatrizAuxiliar[vPosicionesUnosAux[i]][i] == 1 && mRank.find(vPosicionesUnosAux[i])->second == 'D'){
+                                    
+                                     //cout << "En auxiliar se encontró : " << vMatrizAuxiliar[vPosicionesUnosAux[i]][i] << endl;
+                                     //cout << "En la matriz de rank se encontró: " << mRank.find(vPosicionesUnosAux[i])->second << endl;
+                                    
+                                    iTemporal = iCountDepth * iPuntosProfundidad[1];
+                                    iTemporal += iPuntosSubir[1];
+                                    
+                                    bBreak = false;
+                                    break;
+                                    
+                                } else if (vectorColSum(vMatrizAuxiliar, i) == 0) {
+                                     //cout << m << " - Elseif" << endl << endl;
+                                    iTemporal = (iCountDepth-1) * iPuntosProfundidad[1];
+                                    iTemporal += iArrScore[2]; // +100
+                                    bBreak = false;
+                                    break;
+                                
+                                } else {
+                                    if(vMatrizAuxiliar[vPosicionesUnosAux[i]][i] == 1){
+                                        //cout << "Primer condicion correcta" << endl;
+                                    } else {
+                                        //cout << "Primer condicion INCORRECTA" << endl;
+                                    }
+                                    
+                                    //cout << vPosicionesUnosAux[i] << endl;
+                                    
+                                    //cout << mRank.find(vPosicionesUnosAux[i])->second << endl;
+                                    
+                                    //cout << m << " - Else" << endl << endl;
+                                    
+                                    iCountDepth++;
+                                    
+                                    //cout << "iCountDepth = " << iCountDepth << endl;
+                                    
+                                    if(iCountDepth >= 5){
+                                        iTemporal = iCountDepth * iPuntosProfundidad[1];
+                                        iTemporal += iArrScore[2]; // +100
+                                        bBreak = false;
+                                        break;
+                                    } else {
+                                        vMatrizAuxiliar = multiplyMatrix(vMatrizOriginal, vMatrizAuxiliar, n);
+                                        
+                                         //cout << "Auxiliar*Original en " << iCountDepth << ": " << endl;
+                                         //print2dVector(vMatrizAuxiliar);
+                                        
+                                         //cout << "---------------------------" << endl;
+                                        while (!vPosicionesUnosAux.empty())
+                                        {
+                                            vPosicionesUnosAux.pop_back();
+                                        }
+                                        for(int a = 0; a<vMatrizAuxiliar.size(); a++){
+                                            if(vMatrizAuxiliar[a][i] == 1){
+                                                vPosicionesUnosAux.push_back(a);
+                                                //cout << "HERE" <<  a << endl;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //cout << "Puntos que el hijo " << iCountHijos << " contribuyo: " << iTemporal << endl;
+                        iScore += iTemporal;
+                        //cout << "iScore en " << iCountHijos << " hijo: " << iScore << endl;
+                        iCountHijos ++;
+
+                        //cout << "Salimos del while" << endl;
+                        bBreak = true;
+                        iCountDepth = 0;
+                        
+                        vMatrizAuxiliar = vMatrizOriginal;
+                        for(int a = 0; a<vMatrizAuxiliar.size(); a++){
+                            vMatrizAuxiliar[a][i] = 0;
+                        }
+                    }
+                    iCountHijos = 0;
+                    iScore += iMultiplicadores[3] * mScore.find(i)->second;
+                    mFinalScore.insert(make_pair(i,iScore));
+                    iTemporal = 0;
+                    while (!vPosicionesUnos.empty())
+                    {
+                        vPosicionesUnos.pop_back();
+                    }
+                    break;
                 default:
                     // cout << "Esto no debería pasar :/ hahah" << endl;
                     break;
