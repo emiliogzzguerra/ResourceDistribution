@@ -14,6 +14,7 @@
 #include <numeric>
 #include <queue>
 #include <sstream>      // std::istringstream
+#include <iomanip>
 
 
 using namespace std;
@@ -608,10 +609,20 @@ int main() {
             }            
         }
     }
-    ofstream outputFile("output.csv");
+    
+    double dSum = 0.0;
+    
     for(auto i : mFinalScore){
-        outputFile << i.first << "," << i.second << endl;
+        dSum += i.second;
     }
-
+    cout << dSum << endl;
+    
+    ofstream outputFile("output.csv");
+    outputFile << "Nombre,Puntos Finales,,Porcentaje" << endl;
+    for(auto i : mFinalScore){
+        double dPercent = (i.second/dSum)*100;
+        outputFile << i.first << "," << i.second << "," << "" << "," << setprecision(3) << dPercent << endl;
+    }
+    
     return 0;
 }
