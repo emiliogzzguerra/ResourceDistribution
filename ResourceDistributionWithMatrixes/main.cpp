@@ -608,7 +608,10 @@ int main() {
             }            
         }
     }
-    printMap(mFinalScore);
+    ofstream outputFile("output.csv");
+    for(auto i : mFinalScore){
+        outputFile << i.first << "," << i.second << endl;
+    }
 
     return 0;
 }
